@@ -59,7 +59,13 @@ class SpaceFloor(models.Model):
     楼层
     """
     name = models.CharField(default="", max_length=30, verbose_name="楼层")
-    model_Url = models.ForeignKey(SpaceBuilding, null=True, blank=True, verbose_name="所属教学楼")
+    level = models.CharField(default="", max_length=64, verbose_name=u'标高')
+    sign = models.CharField(default="",max_length=64,verbose_name=u'标记')
+    facility = models.ForeignKey(SpaceBuilding, null=True, blank=True, verbose_name="所属教学楼")
+    coefficient = models.DecimalField(max_digits=5,decimal_places=2,verbose_name=u'系数',null=True,blank=True)
+    description = models.TextField(verbose_name=u'楼层描述',default="")
+    area = models.DecimalField(max_digits=10,decimal_places=2,verbose_name=u'面积',null=True,blank=True)
+    model = models.ForeignKey('ModelManage.PrecastBeam',blank=True,null=True,related_name='Floor')
 
     class Meta:
         verbose_name = '楼层'
@@ -84,7 +90,24 @@ class SpaceRoom(models.Model):
     boundary = models.CharField(default="",max_length=30, verbose_name="房间边界")
     assignment = models.ForeignKey(RoomAssignment, null=True, blank=True, verbose_name="空间分配")
 
+    def floorname(self):
+        if self.floor:
+            return self.floor.name
+        else:
+            return '--'
 
+    def departmentname(self):
+        if self.department:
+            return self.department.name
+        else:
+            return '--'
+    
+    def categoryname(self):
+        if self.category:
+            return self.category.name
+        else:
+            return '--'        
+     
     class Meta:
         verbose_name = "房间"
         verbose_name_plural = verbose_name
